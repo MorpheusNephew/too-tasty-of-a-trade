@@ -1,3 +1,3 @@
-module github.com/MorpheusNephew/too-tasty-of-a-trade/v2
+module github.com/MorpheusNephew/ttoat/v2
 
 go 1.22.4
