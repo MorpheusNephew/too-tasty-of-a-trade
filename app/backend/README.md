@@ -1,6 +1,6 @@
 # Backend
 
-This is the server that will be used to fulfill all desires of the front-end
+The first iteration of this service is return a list of ticker symbols that matches a certain criteria that will be defined later.
 
 - [Backend](#backend)
   - [Resources](#resources)
