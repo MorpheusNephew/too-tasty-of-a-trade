@@ -1,0 +1,3 @@
+GET https://api.tastyworks.com/public-watchlists
+Accept: application/json
+Content-Type: application/json
