@@ -1,3 +1,16 @@
-GET https://api.tastyworks.com/public-watchlists
-Accept: application/json
-Content-Type: application/json
+@baseApi=https://api.tastyworks.com
+@publicWatchlists={{baseApi}}/public-watchlists
+@contentType=application/json
+@userAgent=tastytrade-api-client/1.0
+@authorization=not-real
+
+GET {{publicWatchlists}}
+Content-Type: {{contentType}}
+User-Agent: {{userAgent}}
+Authorization: {{authorization}}
+
+### Specific watchlist
+GET {{publicWatchlists}}/tasty%20IVR
+Content-Type: {{contentType}}
+User-Agent: {{userAgent}}
+Authorization: {{authorization}}

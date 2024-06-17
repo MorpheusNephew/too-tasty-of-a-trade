@@ -1,0 +1,20 @@
+@baseApi=https://api.tastyworks.com
+@authorization=not-real
+
+### Create session
+
+POST {{baseApi}}/sessions
+Content-Type: application/json
+User-Agent: tastytrade-api-client/1.0
+
+{
+    "login": "jelanithetrader",
+    "password": "MOY-thuk9lu9cog",
+    "remember-me": false
+}
+
+### Destroy session
+DELETE {{baseApi}}/sessions
+Content-Type: application/json
+User-Agent: tastytrade-api-client/1.0
+Authorization: {{authorization}}
