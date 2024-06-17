@@ -8,8 +8,8 @@ Content-Type: application/json
 User-Agent: tastytrade-api-client/1.0
 
 {
-    "login": "jelanithetrader",
-    "password": "MOY-thuk9lu9cog",
+    "login": "not-real-login",
+    "password": "not-real-password",
     "remember-me": false
 }
 
