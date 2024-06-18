@@ -1,4 +1,4 @@
-package client
+package tastyworks
 
 import (
 	"io"
@@ -15,14 +15,6 @@ var baseUrl = "https://api.tastyworks.com"
 var contentType = "application/json"
 
 var userAgent = "tastytrade-api-client/1.0"
-
-func GetTTClient() *TTClient {
-	// Create http client to be used for underlying requests
-	httpClient := &http.Client{}
-
-	// Create TTClient which will be used to make all TastyTrade requests
-	return &TTClient{HttpClient: httpClient}
-}
 
 func (t *TTClient) addHeaders(req *http.Request) {
 	req.Header.Set("Content-Type", contentType)
