@@ -12,32 +12,32 @@ type WatchListEntry struct {
 	InstrumentType string `json:"instrument_type"`
 }
 
-type WatchList struct {
+type Watchlist struct {
 	Name             string           `json:"name"`
 	WatchListEntries []WatchListEntry `json:"watchlist-entries"`
 }
 
-type WatchLists struct {
-	Items []WatchList `json:"items"`
+type Watchlists struct {
+	Items []Watchlist `json:"items"`
 }
 
 type WatchListsResponse struct {
 	Context string     `json:"context"`
-	Data    WatchLists `json:"data"`
+	Data    Watchlists `json:"data"`
 }
 
 type WatchListResponse struct {
 	Context string    `json:"context"`
-	Data    WatchList `json:"data"`
+	Data    Watchlist `json:"data"`
 }
 
-func (t *TTClient) GetPublicWatchLists() {
+func (t *TTClient) GetPublicWatchLists() (*WatchListsResponse, error) {
 	url := fmt.Sprintf("%s/public-watchlists", baseUrl)
 
 	resp, err := t.get(url)
 
 	if err != nil {
-		panic("Getting public watchlists is busted")
+		return nil, err
 	}
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
@@ -47,21 +47,21 @@ func (t *TTClient) GetPublicWatchLists() {
 	err = json.Unmarshal(bodyBytes, &responseBody)
 
 	if err != nil {
-		panic("An error occurred in the unmarshalling")
+		return nil, err
 	}
 
 	fmt.Println("What are the results?", responseBody)
+
+	return &responseBody, nil
 }
 
-func (t *TTClient) GetPublicWatchList(listName string) {
+func (t *TTClient) GetPublicWatchList(listName string) (*WatchListResponse, error) {
 	url := fmt.Sprintf("%s/public-watchlists/%s", baseUrl, url.PathEscape((listName)))
-
-	fmt.Println("What is this url?", url)
 
 	resp, err := t.get(url)
 
 	if err != nil {
-		panic("Getting public watchlists is busted")
+		return nil, err
 	}
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
@@ -71,8 +71,9 @@ func (t *TTClient) GetPublicWatchList(listName string) {
 	err = json.Unmarshal(bodyBytes, &responseBody)
 
 	if err != nil {
-		panic("An error occurred in the unmarshalling")
+		return nil, err
 	}
 
 	fmt.Println("What are the results?", responseBody)
+	return &responseBody, nil
 }
