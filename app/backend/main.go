@@ -17,7 +17,15 @@ func main() {
 
 	ttClient.CreateSession(username, password)
 
-	ttClient.GetPublicWatchList("tasty IVR")
+	watchlistData, err := ttClient.GetPublicWatchList("tasty IVR", "Equity")
+
+	if err != nil {
+		fmt.Println("Something bad happened getting watchlist data", err)
+	}
+
+	firstItem := watchlistData.Data.WatchListEntries[0]
+
+	ttClient.GetOptionChain(firstItem.Symbol)
 
 	ttClient.RemoveSession()
 
