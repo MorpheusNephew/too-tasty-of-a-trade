@@ -10,8 +10,6 @@ type TTClient struct {
 	SessionToken string
 }
 
-var baseUrl = "https://api.tastyworks.com"
-
 var contentType = "application/json"
 
 var userAgent = "tastytrade-api-client/1.0"

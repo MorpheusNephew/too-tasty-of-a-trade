@@ -1,0 +1,11 @@
+@baseApi=https://api.tastyworks.com
+@marketMetrics={{baseApi}}/market-metrics
+@contentType=application/json
+@userAgent=tastytrade-api-client/1.0
+@authorization=not-real
+
+### Get Symbol option chain
+GET {{marketMetrics}}?symbols=WBA,LEN,ACN,FDX,MU
+Content-Type: {{contentType}}
+User-Agent: {{userAgent}}
+Authorization: {{authorization}}
