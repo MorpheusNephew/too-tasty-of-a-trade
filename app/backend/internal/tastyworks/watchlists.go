@@ -31,10 +31,10 @@ type WatchListResponse struct {
 	Data    Watchlist `json:"data"`
 }
 
-func (t *TTClient) GetPublicWatchLists() (*WatchListsResponse, error) {
-	url := fmt.Sprintf("%s/public-watchlists", baseUrl)
+var watchlistsUrl = fmt.Sprintf("%s/public-watchlists", baseUrl)
 
-	resp, err := t.get(url)
+func (t *TTClient) GetPublicWatchLists() (*WatchListsResponse, error) {
+	resp, err := t.get(watchlistsUrl)
 
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (t *TTClient) GetPublicWatchLists() (*WatchListsResponse, error) {
 }
 
 func (t *TTClient) GetPublicWatchList(listName string) (*WatchListResponse, error) {
-	url := fmt.Sprintf("%s/public-watchlists/%s", baseUrl, url.PathEscape((listName)))
+	url := fmt.Sprintf("%s/%s", watchlistsUrl, url.PathEscape((listName)))
 
 	resp, err := t.get(url)
 

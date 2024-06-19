@@ -30,9 +30,9 @@ type LoginInfoResponse struct {
 	Data    LoginInfoDataResponse `json:"data"`
 }
 
-func (t *TTClient) CreateSession(username, password string) {
-	url := fmt.Sprintf("%s/sessions", baseUrl)
+var sessionsUrl = fmt.Sprintf("%s/sessions", baseUrl)
 
+func (t *TTClient) CreateSession(username, password string) {
 	loginInfoRequest := LoginInfoRequest{username, password, true}
 
 	jsonBytes, err := json.Marshal(loginInfoRequest)
@@ -43,7 +43,7 @@ func (t *TTClient) CreateSession(username, password string) {
 
 	body := bytes.NewBuffer(jsonBytes)
 
-	resp, err := t.post(url, body)
+	resp, err := t.post(sessionsUrl, body)
 
 	if err != nil {
 		panic("This isn't the deal my guy")
@@ -63,9 +63,7 @@ func (t *TTClient) CreateSession(username, password string) {
 }
 
 func (t *TTClient) RemoveSession() {
-	url := fmt.Sprintf("%s/sessions", baseUrl)
-
-	_, err := t.delete(url)
+	_, err := t.delete(sessionsUrl)
 
 	if err != nil {
 		panic("An issue occurred removing session")
