@@ -55,7 +55,12 @@ func (t *TTClient) GetPublicWatchLists() (*WatchListsResponse, error) {
 	return &responseBody, nil
 }
 
-func (t *TTClient) GetPublicWatchList(listName string) (*WatchListResponse, error) {
+/*
+Get public watchlist with a specific watchlist name will return a list of symbols on that list.
+The information here that will be used for the first iteration of this project is `implied-volatility-index-rank`.
+Anything greater than 0.60 should be added to a list for further inspection
+*/
+func (t *TTClient) GetPublicWatchList(listName, instrumentType string) (*WatchListResponse, error) {
 	url := fmt.Sprintf("%s/%s", watchlistsUrl, url.PathEscape((listName)))
 
 	resp, err := t.get(url)
@@ -74,6 +79,15 @@ func (t *TTClient) GetPublicWatchList(listName string) (*WatchListResponse, erro
 		return nil, err
 	}
 
-	fmt.Println("What are the results?", responseBody)
+	matchedInstrumentEntries := []WatchListEntry{}
+
+	for _, watchlistEntry := range responseBody.Data.WatchListEntries {
+		if watchlistEntry.InstrumentType == instrumentType {
+			matchedInstrumentEntries = append(matchedInstrumentEntries, watchlistEntry)
+		}
+	}
+
+	responseBody.Data.WatchListEntries = matchedInstrumentEntries
+
 	return &responseBody, nil
 }
