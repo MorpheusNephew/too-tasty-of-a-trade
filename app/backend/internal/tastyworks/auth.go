@@ -32,13 +32,13 @@ type LoginInfoResponse struct {
 
 var sessionsUrl = fmt.Sprintf("%s/sessions", baseUrl)
 
-func (t *TTClient) CreateSession(username, password string) {
+func (t *TTClient) CreateSession(username, password string) (bool, error) {
 	loginInfoRequest := LoginInfoRequest{username, password, true}
 
 	jsonBytes, err := json.Marshal(loginInfoRequest)
 
 	if err != nil {
-		panic("Not worth it")
+		return false, err
 	}
 
 	body := bytes.NewBuffer(jsonBytes)
@@ -46,26 +46,34 @@ func (t *TTClient) CreateSession(username, password string) {
 	resp, err := t.post(sessionsUrl, body)
 
 	if err != nil {
-		panic("This isn't the deal my guy")
+		return false, err
 	}
 
-	bodyBytes, _ := io.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		return false, err
+	}
 
 	responseBody := LoginInfoResponse{}
 
 	err = json.Unmarshal(bodyBytes, &responseBody)
 
 	if err != nil {
-		panic("Something happened with the marshalling")
+		return false, err
 	}
 
 	t.SessionToken = responseBody.Data.SessionToken
+
+	return true, nil
 }
 
-func (t *TTClient) RemoveSession() {
+func (t *TTClient) RemoveSession() (bool, error) {
 	_, err := t.delete(sessionsUrl)
 
 	if err != nil {
-		panic("An issue occurred removing session")
+		return false, err
 	}
+
+	return true, nil
 }

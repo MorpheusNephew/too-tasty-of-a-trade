@@ -17,8 +17,6 @@ func main() {
 
 	ttClient.CreateSession(username, password)
 
-	ttClient.GetPublicWatchLists()
-
 	ttClient.GetPublicWatchList("tasty IVR")
 
 	ttClient.RemoveSession()
