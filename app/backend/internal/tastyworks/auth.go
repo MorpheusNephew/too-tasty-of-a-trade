@@ -1,10 +1,7 @@
 package tastyworks
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
 )
 
 type LoginInfoRequest struct {
@@ -32,24 +29,16 @@ type LoginInfoResponse struct {
 
 var sessionsUrl = fmt.Sprintf("%s/sessions", baseUrl)
 
-func (t *TTClient) CreateSession(username, password string) (bool, error) {
+func (t *TTClient) CreateSession(username, password string) (ok bool, err error) {
 	loginInfoRequest := LoginInfoRequest{username, password, true}
 
-	jsonBytes, err := json.Marshal(loginInfoRequest)
+	requestBody, err := prepareRequestBody(loginInfoRequest)
 
 	if err != nil {
 		return false, err
 	}
 
-	body := bytes.NewBuffer(jsonBytes)
-
-	resp, err := t.post(sessionsUrl, body)
-
-	if err != nil {
-		return false, err
-	}
-
-	bodyBytes, err := io.ReadAll(resp.Body)
+	resp, err := t.post(sessionsUrl, requestBody)
 
 	if err != nil {
 		return false, err
@@ -57,7 +46,7 @@ func (t *TTClient) CreateSession(username, password string) (bool, error) {
 
 	responseBody := LoginInfoResponse{}
 
-	err = json.Unmarshal(bodyBytes, &responseBody)
+	err = convertResponseToJson(resp, &responseBody)
 
 	if err != nil {
 		return false, err
@@ -68,8 +57,8 @@ func (t *TTClient) CreateSession(username, password string) (bool, error) {
 	return true, nil
 }
 
-func (t *TTClient) RemoveSession() (bool, error) {
-	_, err := t.delete(sessionsUrl)
+func (t *TTClient) RemoveSession() (ok bool, err error) {
+	_, err = t.delete(sessionsUrl)
 
 	if err != nil {
 		return false, err

@@ -1,9 +1,7 @@
 package tastyworks
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/url"
 )
 
@@ -40,11 +38,9 @@ func (t *TTClient) GetPublicWatchLists() (*WatchListsResponse, error) {
 		return nil, err
 	}
 
-	bodyBytes, _ := io.ReadAll(resp.Body)
-
 	responseBody := WatchListsResponse{}
 
-	err = json.Unmarshal(bodyBytes, &responseBody)
+	err = convertResponseToJson(resp, &responseBody)
 
 	if err != nil {
 		return nil, err
@@ -69,11 +65,9 @@ func (t *TTClient) GetPublicWatchList(listName, instrumentType string) (*WatchLi
 		return nil, err
 	}
 
-	bodyBytes, _ := io.ReadAll(resp.Body)
-
 	responseBody := WatchListResponse{}
 
-	err = json.Unmarshal(bodyBytes, &responseBody)
+	err = convertResponseToJson(resp, &responseBody)
 
 	if err != nil {
 		return nil, err
