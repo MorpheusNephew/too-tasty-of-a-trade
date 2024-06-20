@@ -17,14 +17,14 @@ type LoginInfoUserResponse struct {
 	IsConfirmed bool   `json:"is-confirmed"`
 }
 
-type LoginInfoDataResponse struct {
+type LoginInfo struct {
 	User         LoginInfoUserResponse `json:"user"`
 	SessionToken string                `json:"session-token"`
 }
 
 type LoginInfoResponse struct {
-	Context string                `json:"context"`
-	Data    LoginInfoDataResponse `json:"data"`
+	Context string    `json:"context"`
+	Data    LoginInfo `json:"data"`
 }
 
 var sessionsUrl = fmt.Sprintf("%s/sessions", baseUrl)
