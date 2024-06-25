@@ -32,16 +32,28 @@ func (t *TTClient) get(url string) (resp *http.Response, err error) {
 	return t.HttpClient.Do(request)
 }
 
-func (t *TTClient) post(url string, body io.Reader) (resp *http.Response, err error) {
-	request, _ := http.NewRequest(http.MethodPost, url, body)
+func (t *TTClient) delete(url string) (resp *http.Response, err error) {
+	request, _ := http.NewRequest(http.MethodDelete, url, nil)
 
-	t.addHeaders(request)
+	t.addAuthHeaders(request)
 
 	return t.HttpClient.Do(request)
 }
 
-func (t *TTClient) delete(url string) (resp *http.Response, err error) {
-	request, _ := http.NewRequest(http.MethodDelete, url, nil)
+func (t *TTClient) post(url string, body io.Reader, authenticatedRequest bool) (resp *http.Response, err error) {
+	request, _ := http.NewRequest(http.MethodPost, url, body)
+
+	if authenticatedRequest {
+		t.addAuthHeaders(request)
+	} else {
+		t.addHeaders(request)
+	}
+
+	return t.HttpClient.Do(request)
+}
+
+func (t *TTClient) put(url string, body io.Reader) (resp *http.Response, err error) {
+	request, _ := http.NewRequest(http.MethodPut, url, body)
 
 	t.addAuthHeaders(request)
 

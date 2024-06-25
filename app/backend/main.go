@@ -17,13 +17,30 @@ func main() {
 
 	ttClient.CreateSession(username, password)
 
-	watchlistData, err := ttClient.GetPublicWatchList("tasty IVR", "Equity")
+	watchlistData, err := ttClient.GetPublicWatchlist("tasty IVR", "Equity")
 
 	if err != nil {
 		fmt.Println("Something bad happened getting watchlist data", err)
 	}
 
-	firstItem := watchlistData.Data.WatchListEntries[0]
+	firstTenEntries := []string{}
+
+	firstTenSlice := watchlistData.Data.WatchlistEntries[:10]
+
+	for _, entry := range firstTenSlice {
+		firstTenEntries = append(firstTenEntries, entry.Symbol)
+	}
+
+	// Get market metrics
+	marketMetricsResponseBody, err := ttClient.GetMarketMetrics(firstTenEntries)
+
+	if err != nil {
+		fmt.Println("So what had happened", err)
+	}
+
+	fmt.Println("All of the magic", marketMetricsResponseBody)
+
+	firstItem := watchlistData.Data.WatchlistEntries[0]
 
 	ttClient.GetOptionChain(firstItem.Symbol)
 
