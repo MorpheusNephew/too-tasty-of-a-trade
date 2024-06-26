@@ -2,7 +2,7 @@ package tastyworks
 
 import "net/http"
 
-var baseUrl = "https://api.tastyworks.com"
+const baseUrl string = "https://api.tastyworks.com"
 
 func GetTTClient() *TTClient {
 	// Create http client to be used for underlying requests

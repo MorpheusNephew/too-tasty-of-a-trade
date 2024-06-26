@@ -40,9 +40,11 @@ func main() {
 
 	fmt.Println("All of the magic", marketMetricsResponseBody)
 
-	firstItem := watchlistData.Data.WatchlistEntries[0]
+	// firstTwo := watchlistData.Data.WatchlistEntries[:2]
 
-	ttClient.GetOptionChain(firstItem.Symbol)
+	// ttClient.CreatePrivateWatchlist("Something good again", &firstTwo)
+
+	ttClient.DeletePrivateWatchlist("Something good again")
 
 	ttClient.RemoveSession()
 
