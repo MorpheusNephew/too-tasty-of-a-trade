@@ -11,7 +11,9 @@ import (
 func main() {
 	fmt.Println("Welcome to Too Tasty of a Trade!")
 
-	ttClient := tastyworks.GetTTClient()
+	httpClient := &http.Client{}
+
+	ttClient := tastyworks.GetTTClient(httpClient)
 
 	username, password := "", ""
 
