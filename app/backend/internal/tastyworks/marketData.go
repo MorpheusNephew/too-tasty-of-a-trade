@@ -5,9 +5,14 @@ import (
 	"strings"
 )
 
+type EarningsInfo struct {
+	ExpectedReportDate string `json:"expected-report-date"`
+}
+
 type MarketMetricInfo struct {
-	Symbol                string `json:"symbol"`
-	ImpliedVolatilityRank string `json:"implied-volatility-index-rank"`
+	Symbol                string       `json:"symbol"`
+	ImpliedVolatilityRank string       `json:"implied-volatility-index-rank"`
+	Earnings              EarningsInfo `json:"earnings"`
 }
 
 type MarketMetricInfoItems struct {
