@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/MorpheusNephew/ttoat/v2/internal/tastyworks"
 )
@@ -52,6 +54,10 @@ func main() {
 
 	above90, above80, above70 := []tastyworks.WatchlistEntry{}, []tastyworks.WatchlistEntry{}, []tastyworks.WatchlistEntry{}
 
+	sixtyDaysFromNow := time.Now().Add(time.Hour * 24 * 60)
+
+	fmt.Printf("60 days from now? %d-%d-%d\n", sixtyDaysFromNow.Year(), sixtyDaysFromNow.Month(), sixtyDaysFromNow.Day())
+
 	for _, item := range marketMetricsItems {
 		impliedVolatilityRank, err := strconv.ParseFloat(item.ImpliedVolatilityRank, 64)
 
@@ -59,14 +65,30 @@ func main() {
 			continue
 		}
 
+		dateSlice := strings.Split(item.Earnings.ExpectedReportDate, "-")
+
+		earningsYear, _ := strconv.ParseInt(dateSlice[0], 10, 64)
+		earningsMonth, _ := strconv.ParseInt(dateSlice[1], 10, 64)
+		earningsDay, _ := strconv.ParseInt(dateSlice[2], 10, 64)
+
+		earningsDate := time.Date(int(earningsYear), time.Month(earningsMonth), int(earningsDay), 0, 0, 0, 0, time.Local)
+
+		if earningsDate.Compare(sixtyDaysFromNow) == -1 {
+			fmt.Println("Earnings", earningsDate, "is too close")
+			continue
+		}
+
 		symbol := item.Symbol
 
 		if impliedVolatilityRank >= 0.9 {
 			above90 = append(above90, tastyworks.WatchlistEntry{Symbol: symbol, InstrumentType: "Equity"})
+			fmt.Println("Above 90 earnings date", item.Earnings.ExpectedReportDate)
 		} else if impliedVolatilityRank >= 0.8 {
 			above80 = append(above80, tastyworks.WatchlistEntry{Symbol: symbol, InstrumentType: "Equity"})
+			fmt.Println("Above 80 earnings date", item.Earnings.ExpectedReportDate)
 		} else if impliedVolatilityRank >= 0.7 {
 			above70 = append(above70, tastyworks.WatchlistEntry{Symbol: symbol, InstrumentType: "Equity"})
+			fmt.Println("Above 70 earnings date", item.Earnings.ExpectedReportDate)
 		}
 	}
 
@@ -74,9 +96,9 @@ func main() {
 
 	// firstTwo := watchlistData.Data.WatchlistEntries[:2]
 
-	ttClient.CreatePrivateWatchlist(above90WatchlistName, &above90)
-	ttClient.CreatePrivateWatchlist(above80WatchlistName, &above80)
-	ttClient.CreatePrivateWatchlist(above70WatchlistName, &above70)
+	ttClient.UpdatePrivateWatchlist(above90WatchlistName, &above90)
+	ttClient.UpdatePrivateWatchlist(above80WatchlistName, &above80)
+	ttClient.UpdatePrivateWatchlist(above70WatchlistName, &above70)
 
 	// ttClient.DeletePrivateWatchlist(watchlistName)
 
