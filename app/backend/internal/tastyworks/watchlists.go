@@ -112,8 +112,8 @@ func (t *TTClient) GetPublicWatchlist(listName, instrumentType string) (*Watchli
 	return responseBody, nil
 }
 
-func (t *TTClient) CreatePrivateWatchlist(listName string, watchlistEntries *[]WatchlistEntry) (*WatchlistResponse, error) {
-	createWatchlistRequest := PostWatchlists{Name: listName, WatchlistEntries: *watchlistEntries}
+func (t *TTClient) CreatePrivateWatchlist(listName string, watchlistEntries []WatchlistEntry) (*WatchlistResponse, error) {
+	createWatchlistRequest := PostWatchlists{Name: listName, WatchlistEntries: watchlistEntries}
 
 	requestBody, err := prepareRequestBody(createWatchlistRequest)
 
@@ -154,10 +154,10 @@ func (t *TTClient) DeletePrivateWatchlist(listName string) error {
 	return err
 }
 
-func (t *TTClient) UpdatePrivateWatchlist(listName string, watchlistEntries *[]WatchlistEntry) (*WatchlistResponse, error) {
+func (t *TTClient) UpdatePrivateWatchlist(listName string, watchlistEntries []WatchlistEntry) (*WatchlistResponse, error) {
 	url := fmt.Sprintf("%s/%s", privateWatchlistsUrl, url.PathEscape(listName))
 
-	updateWatchlistRequest := PutWatchlists{Name: listName, WatchlistEntries: *watchlistEntries}
+	updateWatchlistRequest := PutWatchlists{Name: listName, WatchlistEntries: watchlistEntries}
 
 	requestBody, err := prepareRequestBody(updateWatchlistRequest)
 

@@ -6,7 +6,7 @@ import (
 )
 
 type TTClient struct {
-	HttpClient   *http.Client
+	HttpClient   http.Client
 	SessionToken string
 }
 
