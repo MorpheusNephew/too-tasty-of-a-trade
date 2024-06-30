@@ -38,7 +38,7 @@ func (t *TTClient) CreateSession(username, password string) (ok bool, err error)
 		return false, err
 	}
 
-	resp, err := t.post(sessionsUrl, requestBody, false)
+	resp, err := t.post(sessionsUrl, &requestBody, false)
 
 	if err != nil {
 		return false, err
@@ -46,7 +46,7 @@ func (t *TTClient) CreateSession(username, password string) (ok bool, err error)
 
 	responseBody := LoginInfoResponse{}
 
-	err = convertResponseToJson(resp, &responseBody)
+	err = convertResponseToJson(*resp, &responseBody)
 
 	if err != nil {
 		return false, err

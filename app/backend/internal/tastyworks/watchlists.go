@@ -40,19 +40,23 @@ var publicWatchlistsUrl = fmt.Sprintf("%s/public-watchlists", baseUrl)
 
 var privateWatchlistsUrl = fmt.Sprintf("%s/watchlists", baseUrl)
 
-func (t *TTClient) getWatchlists(watchlistsUrl string) (*WatchlistsResponse, error) {
+func (t *TTClient) getWatchlists(watchlistsUrl string) (WatchlistsResponse, error) {
 	resp, err := t.get(watchlistsUrl)
 
-	if err != nil {
-		return nil, err
+	returnError := func(err error) (WatchlistsResponse, error) {
+		return WatchlistsResponse{}, err
 	}
 
-	responseBody := &WatchlistsResponse{}
+	if err != nil {
+		return returnError(err)
+	}
 
-	err = convertResponseToJson(resp, responseBody)
+	responseBody := WatchlistsResponse{}
+
+	err = convertResponseToJson(*resp, &responseBody)
 
 	if err != nil {
-		return nil, err
+		return returnError(err)
 	}
 
 	fmt.Println("What are the results?", responseBody)
@@ -60,21 +64,25 @@ func (t *TTClient) getWatchlists(watchlistsUrl string) (*WatchlistsResponse, err
 	return responseBody, nil
 }
 
-func (t *TTClient) getWatchlist(watchlistUrl, listName string) (*WatchlistResponse, error) {
+func (t *TTClient) getWatchlist(watchlistUrl, listName string) (WatchlistResponse, error) {
 	url := fmt.Sprintf("%s/%s", watchlistUrl, url.PathEscape(listName))
+
+	returnError := func(err error) (WatchlistResponse, error) {
+		return WatchlistResponse{}, err
+	}
 
 	resp, err := t.get(url)
 
 	if err != nil {
-		return nil, err
+		return returnError(err)
 	}
 
-	responseBody := &WatchlistResponse{}
+	responseBody := WatchlistResponse{}
 
-	err = convertResponseToJson(resp, responseBody)
+	err = convertResponseToJson(*resp, &responseBody)
 
 	if err != nil {
-		return nil, err
+		return returnError(err)
 	}
 
 	return responseBody, nil
@@ -83,7 +91,7 @@ func (t *TTClient) getWatchlist(watchlistUrl, listName string) (*WatchlistRespon
 /*
 Get all of TastyWorks public watchlists
 */
-func (t *TTClient) GetPublicWatchlists() (*WatchlistsResponse, error) {
+func (t *TTClient) GetPublicWatchlists() (WatchlistsResponse, error) {
 	return t.getWatchlists(publicWatchlistsUrl)
 }
 
@@ -92,11 +100,11 @@ Get public watchlist with a specific watchlist name will return a list of symbol
 The information here that will be used for the first iteration of this project is `implied-volatility-index-rank`.
 Anything greater than 0.60 should be added to a list for further inspection
 */
-func (t *TTClient) GetPublicWatchlist(listName, instrumentType string) (*WatchlistResponse, error) {
+func (t *TTClient) GetPublicWatchlist(listName, instrumentType string) (WatchlistResponse, error) {
 	responseBody, err := t.getWatchlist(publicWatchlistsUrl, listName)
 
 	if err != nil {
-		return nil, err
+		return WatchlistResponse{}, err
 	}
 
 	matchedInstrumentEntries := []WatchlistEntry{}
@@ -112,37 +120,41 @@ func (t *TTClient) GetPublicWatchlist(listName, instrumentType string) (*Watchli
 	return responseBody, nil
 }
 
-func (t *TTClient) CreatePrivateWatchlist(listName string, watchlistEntries []WatchlistEntry) (*WatchlistResponse, error) {
+func (t *TTClient) CreatePrivateWatchlist(listName string, watchlistEntries []WatchlistEntry) (WatchlistResponse, error) {
 	createWatchlistRequest := PostWatchlists{Name: listName, WatchlistEntries: watchlistEntries}
 
 	requestBody, err := prepareRequestBody(createWatchlistRequest)
 
-	if err != nil {
-		return nil, err
+	returnError := func(err error) (WatchlistResponse, error) {
+		return WatchlistResponse{}, err
 	}
 
-	resp, err := t.post(privateWatchlistsUrl, requestBody, true)
-
 	if err != nil {
-		return nil, err
+		return returnError(err)
 	}
 
-	responseBody := &WatchlistResponse{}
-
-	err = convertResponseToJson(resp, responseBody)
+	resp, err := t.post(privateWatchlistsUrl, &requestBody, true)
 
 	if err != nil {
-		return nil, err
+		return returnError(err)
+	}
+
+	responseBody := WatchlistResponse{}
+
+	err = convertResponseToJson(*resp, &responseBody)
+
+	if err != nil {
+		return returnError(err)
 	}
 
 	return responseBody, nil
 }
 
-func (t *TTClient) GetPrivateWatchlists() (*WatchlistsResponse, error) {
+func (t *TTClient) GetPrivateWatchlists() (WatchlistsResponse, error) {
 	return t.getWatchlists(privateWatchlistsUrl)
 }
 
-func (t *TTClient) GetPrivateWatchlist(listName string) (*WatchlistResponse, error) {
+func (t *TTClient) GetPrivateWatchlist(listName string) (WatchlistResponse, error) {
 	return t.getWatchlist(privateWatchlistsUrl, listName)
 }
 
@@ -154,29 +166,33 @@ func (t *TTClient) DeletePrivateWatchlist(listName string) error {
 	return err
 }
 
-func (t *TTClient) UpdatePrivateWatchlist(listName string, watchlistEntries []WatchlistEntry) (*WatchlistResponse, error) {
+func (t *TTClient) UpdatePrivateWatchlist(listName string, watchlistEntries []WatchlistEntry) (WatchlistResponse, error) {
 	url := fmt.Sprintf("%s/%s", privateWatchlistsUrl, url.PathEscape(listName))
 
 	updateWatchlistRequest := PutWatchlists{Name: listName, WatchlistEntries: watchlistEntries}
 
 	requestBody, err := prepareRequestBody(updateWatchlistRequest)
 
-	if err != nil {
-		return nil, err
+	returnError := func(err error) (WatchlistResponse, error) {
+		return WatchlistResponse{}, err
 	}
 
-	resp, err := t.put(url, requestBody)
-
 	if err != nil {
-		return nil, err
+		return returnError(err)
 	}
 
-	responseBody := &WatchlistResponse{}
-
-	err = convertResponseToJson(resp, responseBody)
+	resp, err := t.put(url, &requestBody)
 
 	if err != nil {
-		return nil, err
+		return returnError(err)
+	}
+
+	responseBody := WatchlistResponse{}
+
+	err = convertResponseToJson(*resp, &responseBody)
+
+	if err != nil {
+		return returnError(err)
 	}
 
 	return responseBody, nil

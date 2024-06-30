@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func convertResponseToJson[T any](resp *http.Response, jsonBody *T) error {
+func convertResponseToJson[T any](resp http.Response, jsonBody T) error {
 	bodyBytes, err := io.ReadAll(resp.Body)
 
 	if err != nil {
@@ -17,14 +17,14 @@ func convertResponseToJson[T any](resp *http.Response, jsonBody *T) error {
 	return json.Unmarshal(bodyBytes, &jsonBody)
 }
 
-func prepareRequestBody[T any](requestData T) (*bytes.Buffer, error) {
+func prepareRequestBody[T any](requestData T) (bytes.Buffer, error) {
 	jsonBytes, err := json.Marshal(requestData)
 
 	if err != nil {
-		return nil, err
+		return bytes.Buffer{}, err
 	}
 
 	body := bytes.NewBuffer(jsonBytes)
 
-	return body, nil
+	return *body, nil
 }

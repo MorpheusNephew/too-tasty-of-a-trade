@@ -36,7 +36,7 @@ func (t *TTClient) GetMarketMetrics(symbols []string) (*MarketMetricInfoResponse
 
 	responseBody := &MarketMetricInfoResponse{}
 
-	err = convertResponseToJson(resp, responseBody)
+	err = convertResponseToJson(*resp, responseBody)
 
 	if err != nil {
 		return nil, err
