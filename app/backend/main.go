@@ -51,9 +51,11 @@ func main() {
 
 	above90, above80, above70 := []tastyworks.WatchlistEntry{}, []tastyworks.WatchlistEntry{}, []tastyworks.WatchlistEntry{}
 
-	sixtyDaysFromNow := time.Now().Add(time.Hour * 24 * 60)
+	daysIntoTheFuture := 50
 
-	fmt.Printf("60 days from now? %d-%d-%d\n", sixtyDaysFromNow.Year(), sixtyDaysFromNow.Month(), sixtyDaysFromNow.Day())
+	daysFromNow := time.Now().Add(time.Hour * 24 * time.Duration(daysIntoTheFuture))
+
+	fmt.Printf("%d days from now? %d-%d-%d\n", daysIntoTheFuture, daysFromNow.Year(), daysFromNow.Month(), daysFromNow.Day())
 
 	for _, item := range marketMetricsItems {
 		impliedVolatilityRank, err := strconv.ParseFloat(item.ImpliedVolatilityRank, 64)
@@ -70,8 +72,7 @@ func main() {
 
 		earningsDate := time.Date(int(earningsYear), time.Month(earningsMonth), int(earningsDay), 0, 0, 0, 0, time.Local)
 
-		if earningsDate.Compare(sixtyDaysFromNow) == -1 {
-			fmt.Println("Earnings", earningsDate, "is too close")
+		if earningsDate.Compare(daysFromNow) == -1 {
 			continue
 		}
 
