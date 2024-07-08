@@ -29,19 +29,19 @@ type LoginInfoResponse struct {
 
 var sessionsUrl = fmt.Sprintf("%s/sessions", baseUrl)
 
-func (t *TTClient) CreateSession(username, password string) (ok bool, err error) {
+func (t *TTClient) CreateSession(username, password string) error {
 	loginInfoRequest := LoginInfoRequest{username, password, true}
 
 	requestBody, err := prepareRequestBody(loginInfoRequest)
 
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	resp, err := t.post(sessionsUrl, &requestBody, false)
 
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	responseBody := LoginInfoResponse{}
@@ -49,20 +49,20 @@ func (t *TTClient) CreateSession(username, password string) (ok bool, err error)
 	err = convertResponseToJson(*resp, &responseBody)
 
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	t.SessionToken = responseBody.Data.SessionToken
 
-	return true, nil
+	return nil
 }
 
-func (t *TTClient) RemoveSession() (ok bool, err error) {
+func (t *TTClient) RemoveSession() (err error) {
 	_, err = t.delete(sessionsUrl)
 
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }

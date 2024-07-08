@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/MorpheusNephew/ttoat/v2/internal/tastyworks"
@@ -22,12 +23,18 @@ func main() {
 
 	username, password := "", ""
 
-	ttClient.CreateSession(username, password)
+	err := ttClient.CreateSession(username, password)
+
+	if err != nil {
+		fmt.Println("There was an issue logging in", err)
+		syscall.Exit(1)
+	}
 
 	watchlistData, err := ttClient.GetPublicWatchlist("tasty IVR", "Equity")
 
 	if err != nil {
 		fmt.Println("Something bad happened getting watchlist data", err)
+		syscall.Exit(1)
 	}
 
 	allSymbols := []string{}
@@ -43,6 +50,7 @@ func main() {
 
 	if err != nil {
 		fmt.Println("So what had happened", err)
+		syscall.Exit(1)
 	}
 
 	marketMetricsItems := marketMetricsResponseBody.Data.Items
