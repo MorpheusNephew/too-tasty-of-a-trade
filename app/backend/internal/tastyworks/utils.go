@@ -7,14 +7,14 @@ import (
 	"net/http"
 )
 
-func convertResponseToJson[T any](resp http.Response, jsonBody T) error {
+func convertResponseToJson[T any](resp http.Response, jsonBody *T) error {
 	bodyBytes, err := io.ReadAll(resp.Body)
 
 	if err != nil {
 		return err
 	}
 
-	return json.Unmarshal(bodyBytes, &jsonBody)
+	return json.Unmarshal(bodyBytes, jsonBody)
 }
 
 func prepareRequestBody[T any](requestData T) (bytes.Buffer, error) {

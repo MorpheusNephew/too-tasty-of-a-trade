@@ -29,7 +29,7 @@ type LoginInfoResponse struct {
 
 var sessionsUrl = fmt.Sprintf("%s/sessions", baseUrl)
 
-func (t TTClient) CreateSession(username, password string) (ok bool, err error) {
+func (t *TTClient) CreateSession(username, password string) (ok bool, err error) {
 	loginInfoRequest := LoginInfoRequest{username, password, true}
 
 	requestBody, err := prepareRequestBody(loginInfoRequest)
@@ -57,7 +57,7 @@ func (t TTClient) CreateSession(username, password string) (ok bool, err error) 
 	return true, nil
 }
 
-func (t TTClient) RemoveSession() (ok bool, err error) {
+func (t *TTClient) RemoveSession() (ok bool, err error) {
 	_, err = t.delete(sessionsUrl)
 
 	if err != nil {
