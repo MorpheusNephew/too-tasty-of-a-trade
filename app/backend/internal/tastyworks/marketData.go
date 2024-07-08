@@ -25,21 +25,21 @@ type MarketMetricInfoResponse struct {
 
 var marketMetricsUrl = fmt.Sprintf("%s/market-metrics", baseUrl)
 
-func (t TTClient) GetMarketMetrics(symbols []string) (*MarketMetricInfoResponse, error) {
+func (t TTClient) GetMarketMetrics(symbols []string) (MarketMetricInfoResponse, error) {
 	url := fmt.Sprintf("%s?symbols=%s", marketMetricsUrl, strings.Join(symbols, ","))
 
 	resp, err := t.get(url)
 
 	if err != nil {
-		return nil, err
+		return MarketMetricInfoResponse{}, err
 	}
 
-	responseBody := &MarketMetricInfoResponse{}
+	responseBody := MarketMetricInfoResponse{}
 
-	err = convertResponseToJson(*resp, responseBody)
+	err = convertResponseToJson(*resp, &responseBody)
 
 	if err != nil {
-		return nil, err
+		return MarketMetricInfoResponse{}, err
 	}
 
 	return responseBody, nil
