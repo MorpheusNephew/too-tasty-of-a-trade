@@ -28,10 +28,14 @@ var marketMetricsUrl = fmt.Sprintf("%s/market-metrics", baseUrl)
 func (t TTClient) GetMarketMetrics(symbols []string) (MarketMetricInfoResponse, error) {
 	url := fmt.Sprintf("%s?symbols=%s", marketMetricsUrl, strings.Join(symbols, ","))
 
+	returnError := func(err error) (MarketMetricInfoResponse, error) {
+		return MarketMetricInfoResponse{}, err
+	}
+
 	resp, err := t.get(url)
 
 	if err != nil {
-		return MarketMetricInfoResponse{}, err
+		return returnError(err)
 	}
 
 	responseBody := MarketMetricInfoResponse{}
@@ -39,7 +43,7 @@ func (t TTClient) GetMarketMetrics(symbols []string) (MarketMetricInfoResponse, 
 	err = convertResponseToJson(*resp, &responseBody)
 
 	if err != nil {
-		return MarketMetricInfoResponse{}, err
+		return returnError(err)
 	}
 
 	return responseBody, nil
