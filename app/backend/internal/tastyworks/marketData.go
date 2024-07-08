@@ -25,7 +25,7 @@ type MarketMetricInfoResponse struct {
 
 var marketMetricsUrl = fmt.Sprintf("%s/market-metrics", baseUrl)
 
-func (t *TTClient) GetMarketMetrics(symbols []string) (*MarketMetricInfoResponse, error) {
+func (t TTClient) GetMarketMetrics(symbols []string) (*MarketMetricInfoResponse, error) {
 	url := fmt.Sprintf("%s?symbols=%s", marketMetricsUrl, strings.Join(symbols, ","))
 
 	resp, err := t.get(url)
