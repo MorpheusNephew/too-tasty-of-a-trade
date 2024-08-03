@@ -10,6 +10,8 @@ import (
 	"github.com/MorpheusNephew/ttoat/v2/internal/tastyworks"
 )
 
+const daysIntoTheFuture int = 50
+
 func main() {
 	fmt.Println("Welcome to Too Tasty of a Trade!")
 
@@ -59,8 +61,6 @@ func main() {
 
 	above90, above80, above70 := []tastyworks.WatchlistEntry{}, []tastyworks.WatchlistEntry{}, []tastyworks.WatchlistEntry{}
 
-	daysIntoTheFuture := 50
-
 	daysFromNow := time.Now().Add(time.Hour * 24 * time.Duration(daysIntoTheFuture))
 
 	fmt.Printf("%d days from now? %d-%d-%d\n", daysIntoTheFuture, daysFromNow.Year(), daysFromNow.Month(), daysFromNow.Day())
@@ -80,43 +80,26 @@ func main() {
 
 		earningsDate := time.Date(int(earningsYear), time.Month(earningsMonth), int(earningsDay), 0, 0, 0, 0, time.Local)
 
-		if earningsDate.Compare(daysFromNow) == -1 {
+		symbol := item.Symbol
+
+		if earningsDate.Compare(daysFromNow) == -1 && time.Now().Compare(earningsDate) == -1 {
 			continue
 		}
 
-		symbol := item.Symbol
-
 		if impliedVolatilityRank >= 0.9 {
 			above90 = append(above90, tastyworks.WatchlistEntry{Symbol: symbol, InstrumentType: "Equity"})
-			fmt.Println("Above 90 earnings date", item.Earnings.ExpectedReportDate)
 		} else if impliedVolatilityRank >= 0.8 {
 			above80 = append(above80, tastyworks.WatchlistEntry{Symbol: symbol, InstrumentType: "Equity"})
-			fmt.Println("Above 80 earnings date", item.Earnings.ExpectedReportDate)
 		} else if impliedVolatilityRank >= 0.7 {
 			above70 = append(above70, tastyworks.WatchlistEntry{Symbol: symbol, InstrumentType: "Equity"})
-			fmt.Println("Above 70 earnings date", item.Earnings.ExpectedReportDate)
 		}
 	}
 
-	fmt.Println(len(above90), len(above80), len(above70))
-
-	// firstTwo := watchlistData.Data.WatchlistEntries[:2]
+	fmt.Printf("%s: %d\n%s: %d\n%s: %d\n", above90WatchlistName, len(above90), above80WatchlistName, len(above80), above70WatchlistName, len(above70))
 
 	ttClient.UpdatePrivateWatchlist(above90WatchlistName, above90)
 	ttClient.UpdatePrivateWatchlist(above80WatchlistName, above80)
 	ttClient.UpdatePrivateWatchlist(above70WatchlistName, above70)
 
-	// ttClient.DeletePrivateWatchlist(watchlistName)
-
 	ttClient.RemoveSession()
-
-	// r := gin.Default()
-
-	// r.GET("/health-check", func(ctx *gin.Context) {
-	// 	ctx.JSON(http.StatusOK, gin.H{
-	// 		"message": "You've made it",
-	// 	})
-	// })
-
-	// r.Run(":3000")
 }
